@@ -106,6 +106,38 @@ resource "aws_cloudfront_distribution" "site" {
     }
   }
 
+  ##########################################
+  # Custom error responses → /error.html
+  ##########################################
+
+  custom_error_response {
+    error_code            = 404
+    response_code         = 404
+    response_page_path    = "/error.html"
+    error_caching_min_ttl = 60
+  }
+
+  custom_error_response {
+    error_code            = 403
+    response_code         = 404
+    response_page_path    = "/error.html"
+    error_caching_min_ttl = 60
+  }
+
+  custom_error_response {
+    error_code            = 500
+    response_code         = 500
+    response_page_path    = "/error.html"
+    error_caching_min_ttl = 60
+  }
+
+  custom_error_response {
+    error_code            = 502
+    response_code         = 500
+    response_page_path    = "/error.html"
+    error_caching_min_ttl = 60
+  }
+
   price_class = "PriceClass_100"
 
   restrictions {
