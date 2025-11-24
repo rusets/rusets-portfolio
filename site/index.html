@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ruslan Dashkin — DevOps & Cloud Engineer</title>
+  <meta name="description" content="Ruslan Dashkin — DevOps & Cloud Engineer. AWS, Terraform, Kubernetes, CI/CD.">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg">
+    <canvas id="stars"></canvas>
+  </div>
+
+  <header class="header">
+    <div class="brand">
+      <div class="logo">🚀</div>
+      <span class="brand-text">Ruslan AWS</span>
+    </div>
+    <nav class="nav">
+      <a href="https://github.com/rusets" target="_blank" rel="noopener" class="nav-link">
+        <svg class="ico" viewBox="0 0 24 24">
+          <path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1.1 1.9 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/>
+        </svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/rdashkin" target="_blank" rel="noopener" class="nav-link">
+        <svg class="ico" viewBox="0 0 24 24">
+          <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8.5h4V24h-4V8.5zM8 8.5h3.8v2.1h.05c.53-1 1.84-2.1 3.78-2.1C20.2 8.5 24 11.1 24 17v7h-4v-6.1c0-3.2-1.14-5.4-4-5.4-2.18 0-3.47 1.47-4.03 2.88-.21.5-.27 1.2-.27 1.9V24H8V8.5z"/>
+        </svg>
+        LinkedIn
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Ruslan Dashkin</h1>
+      <p class="role">DevOps & Cloud Engineer</p>
+      <p class="lede">Building robust and scalable cloud infrastructures using AWS, Terraform, and more.</p>
+      <div class="buttons">
+        <a
+          class="btn glow"
+          href="mailto:rusets3@gmail.com?subject=Portfolio%20Inquiry%20%E2%80%93%20Ruslan%20Dashkin"
+          target="_blank"
+          rel="noopener"
+        >
+          Contact Me
+        </a>
+
+        <a
+          class="btn ghost"
+          href="assets/cv/Ruslan-Dashkin-Resume-OnePage.pdf"
+          download
+        >
+          Download CV
+        </a>
+      </div>
+    </section>
+
+    <!-- Three main focus areas -->
+    <section class="pill-grid">
+      <div class="pill">
+        <img src="assets/icons/aws.png" alt="AWS logo">
+        <div class="pill-title">AWS Solutions</div>
+      </div>
+      <div class="pill">
+        <img src="assets/icons/terra.png" alt="Terraform logo">
+        <div class="pill-title">IaC Automation</div>
+      </div>
+      <div class="pill">
+        <img src="assets/icons/ia.png" alt="Infrastructure icon">
+        <div class="pill-title">Infrastructure</div>
+      </div>
+    </section>
+
+    <!-- Projects section -->
+    <section class="projects">
+      <h2>Projects</h2>
+
+      <div class="projects-grid">
+        <a class="proj-card" href="https://github.com/rusets/helmkube-autowake-cicd" target="_blank" rel="noopener">
+          <div class="proj-title">HelmKube Autowake</div>
+          <div class="proj-tech">AWS · Terraform · Lambda · k3s · GitHub Actions</div>
+          <div class="proj-desc">Production-style k3s cluster with on-demand wake & auto-sleep.</div>
+        </a>
+
+        <a class="proj-card" href="https://github.com/rusets/ml-sagemaker-serverless" target="_blank" rel="noopener">
+          <div class="proj-title">ML Serverless (SageMaker)</div>
+          <div class="proj-tech">AWS · Lambda · SageMaker Serverless · CloudFront</div>
+          <div class="proj-desc">End-to-end serverless ML app with image classification.</div>
+        </a>
+
+        <a class="proj-card" href="https://github.com/rusets/aws-multi-tier-infra" target="_blank" rel="noopener">
+          <div class="proj-title">AWS Multi-Tier Infra</div>
+          <div class="proj-tech">Terraform · EC2 · RDS · S3 · CloudFront · Route53</div>
+          <div class="proj-desc">Automated multi-tier AWS environment with wake/sleep flow.</div>
+        </a>
+
+        <a class="proj-card" href="https://github.com/rusets/docker-ecs-deployment" target="_blank" rel="noopener">
+          <div class="proj-title">Docker ECS Deployment</div>
+          <div class="proj-tech">Docker · ECS Fargate · ECR · GitHub Actions</div>
+          <div class="proj-desc">CI/CD pipeline deploying a containerized app to ECS Fargate.</div>
+        </a>
+
+        <a class="proj-card" href="https://github.com/rusets/ridebot-infra" target="_blank" rel="noopener">
+          <div class="proj-title">RideBot Infra</div>
+          <div class="proj-tech">AWS Lambda · DynamoDB · Telegram Bot · Terraform</div>
+          <div class="proj-desc">Serverless backend for a real-time, location-based ride bot.</div>
+        </a>
+
+        <a class="proj-card" href="https://github.com/rusets/rdservicepros-site" target="_blank" rel="noopener">
+          <div class="proj-title">RD Service Pros Website</div>
+          <div class="proj-tech">S3 · CloudFront · Terraform · OIDC CI/CD</div>
+          <div class="proj-desc">Production static website for RD Service Pros with full IaC.</div>
+        </a>
+
+        <a class="proj-card"
+           href="https://github.com/rusets/CI-CD-Pipeline-for-Application-Deployment"
+           target="_blank" rel="noopener">
+          <div class="proj-title">CI/CD Pipeline for App Deployment</div>
+          <div class="proj-tech">GitHub Actions · Docker · AWS · Terraform</div>
+          <div class="proj-desc">
+            Automated pipeline for packaging, testing, and deploying applications with Terraform integration.
+          </div>
+        </a>
+
+        <a class="proj-card"
+           href="https://github.com/rusets/rusets-portfolio"
+           target="_blank" rel="noopener">
+          <div class="proj-title">Rusets Portfolio Website</div>
+          <div class="proj-tech">S3 · CloudFront · Terraform · GitHub Actions · OIDC</div>
+          <div class="proj-desc">
+            Personal DevOps portfolio website with full IaC deployment pipeline.
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="certs">
+      <h2>AWS Certifications</h2>
+
+      <div class="cert-row">
+        <a class="cert-card" href="https://www.credly.com/users/rdashkin" target="_blank" rel="noopener">
+          <img class="badge-img" src="assets/badges/sol.png" alt="AWS Certified Solutions Architect – Associate badge">
+          <div class="txt">AWS Certified Solutions Architect – Associate</div>
+        </a>
+
+        <a class="cert-card" href="https://www.credly.com/users/rdashkin" target="_blank" rel="noopener">
+          <img class="badge-img" src="assets/badges/devel.png" alt="AWS Certified Developer – Associate badge">
+          <div class="txt">AWS Certified Developer – Associate</div>
+        </a>
+
+        <a class="cert-card" href="https://www.credly.com/users/rdashkin" target="_blank" rel="noopener">
+          <img class="badge-img" src="assets/badges/cloud.png" alt="AWS Certified Cloud Practitioner badge">
+          <div class="txt">AWS Certified Cloud Practitioner</div>
+        </a>
+
+        <a class="cert-card" href="https://www.credly.com/users/rdashkin" target="_blank" rel="noopener">
+          <img class="badge-img" src="assets/badges/ai-prac.png" alt="AWS Certified AI Practitioner badge">
+          <div class="txt">AWS Certified AI Practitioner</div>
+        </a>
+
+        <a class="cert-card" href="https://www.credly.com/users/rdashkin" target="_blank" rel="noopener">
+          <img class="badge-img" src="assets/badges/early AI.png" alt="AWS Certified AI Practitioner — Early Adopter badge">
+          <div class="txt">AWS Certified AI Practitioner — Early Adopter</div>
+        </a>
+
+        <a class="cert-card" href="https://www.credly.com/users/rdashkin" target="_blank" rel="noopener">
+          <img class="badge-img" src="assets/badges/linux.png" alt="Linux Essentials (LPI) badge">
+          <div class="txt">Linux Essentials (LPI)</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="skills">
+      <h2>Skills</h2>
+      <div id="skills" class="skill-cloud"></div>
+    </section>
+
+    <!-- Links -->
+    <section class="links">
+      <h2>Links</h2>
+      <div class="link-grid">
+        <a class="link-card" href="https://github.com/rusets" target="_blank" rel="noopener">
+          <img src="assets/icons/github.png" alt="GitHub">
+          <div class="sub">Code, Terraform modules, real AWS projects</div>
+        </a>
+        <a class="link-card" href="https://www.linkedin.com/in/rdashkin" target="_blank" rel="noopener">
+          <img src="assets/badges/saa.png" alt="LinkedIn">
+          <div class="sub">Experience, achievements, and contact</div>
+        </a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      © <span id="year"></span> Ruslan Dashkin — Neon RGB Glass Edition.
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
