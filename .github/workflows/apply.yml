@@ -1,0 +1,60 @@
+name: Terraform apply (infra)
+
+on:
+  workflow_dispatch:
+    inputs:
+      approve_apply:
+        description: "Type APPLY to confirm Terraform apply to infra/"
+        required: true
+        default: "NO"
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  TF_WORKDIR: infra
+  TF_ROLE_ARN: arn:aws:iam::097635932419:role/rusets-portfolio-gha-role
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: rusets-portfolio-infra-apply
+      cancel-in-progress: false
+
+    if: ${{ github.event.inputs.approve_apply == 'APPLY' }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.TF_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKDIR }}
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        working-directory: ${{ env.TF_WORKDIR }}
+        run: terraform validate
+
+      - name: Terraform plan (safety)
+        working-directory: ${{ env.TF_WORKDIR }}
+        run: terraform plan -input=false -no-color -out=tfplan
+
+      - name: Terraform apply
+        working-directory: ${{ env.TF_WORKDIR }}
+        run: terraform apply -input=false -auto-approve tfplan
