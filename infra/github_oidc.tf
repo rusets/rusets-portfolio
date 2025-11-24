@@ -9,7 +9,7 @@ data "aws_iam_openid_connect_provider" "github" {
 
 ############################################
 # IAM policy for GitHub Actions
-# Purpose: Deploy static site + manage TF backend state/locks
+# Purpose: Deploy static site + manage TF backend + read infra
 ############################################
 
 resource "aws_iam_policy" "github_actions" {
@@ -19,50 +19,79 @@ resource "aws_iam_policy" "github_actions" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
+      # --- Static site S3 objects ---
       {
         Effect = "Allow",
         Action = [
           "s3:PutObject",
           "s3:PutObjectAcl",
           "s3:GetObject",
-          "s3:DeleteObject"
+          "s3:DeleteObject",
         ],
         Resource = [
-          "${aws_s3_bucket.site.arn}/*"
-        ]
+          "${aws_s3_bucket.site.arn}/*",
+        ],
+      },
+
+      # --- Static site bucket list + policy manage ---
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:ListBucket",
+        ],
+        Resource = aws_s3_bucket.site.arn,
       },
       {
         Effect = "Allow",
         Action = [
-          "s3:ListBucket"
+          "s3:GetBucketPolicy",
+          "s3:PutBucketPolicy",
         ],
-        Resource = aws_s3_bucket.site.arn
+        Resource = aws_s3_bucket.site.arn,
+      },
+
+      # --- CloudFront invalidation + manage distribution/OAC ---
+      {
+        Effect = "Allow",
+        Action = [
+          "cloudfront:CreateInvalidation",
+        ],
+        Resource = "*",
       },
       {
         Effect = "Allow",
         Action = [
-          "cloudfront:CreateInvalidation"
+          "cloudfront:GetDistribution",
+          "cloudfront:GetDistributionConfig",
+          "cloudfront:UpdateDistribution",
+          "cloudfront:ListDistributions",
+          "cloudfront:GetOriginAccessControl",
+          "cloudfront:ListOriginAccessControls",
         ],
-        Resource = "*"
+        Resource = "*",
       },
+
+      # --- Terraform backend (S3 state) ---
       {
         Effect = "Allow",
         Action = [
           "s3:GetObject",
           "s3:PutObject",
-          "s3:DeleteObject"
+          "s3:DeleteObject",
         ],
         Resource = [
-          "arn:aws:s3:::tf-state-rusets-portfolio/rusets-portfolio/terraform.tfstate"
-        ]
+          "arn:aws:s3:::tf-state-rusets-portfolio/rusets-portfolio/terraform.tfstate",
+        ],
       },
       {
         Effect = "Allow",
         Action = [
-          "s3:ListBucket"
+          "s3:ListBucket",
         ],
-        Resource = "arn:aws:s3:::tf-state-rusets-portfolio"
+        Resource = "arn:aws:s3:::tf-state-rusets-portfolio",
       },
+
+      # --- Terraform backend (DynamoDB locks) ---
       {
         Effect = "Allow",
         Action = [
@@ -70,9 +99,40 @@ resource "aws_iam_policy" "github_actions" {
           "dynamodb:PutItem",
           "dynamodb:DeleteItem",
           "dynamodb:UpdateItem",
-          "dynamodb:DescribeTable"
+          "dynamodb:DescribeTable",
         ],
-        Resource = "arn:aws:dynamodb:us-east-1:097635932419:table/tf-locks-rusets-portfolio"
+        Resource = "arn:aws:dynamodb:us-east-1:097635932419:table/tf-locks-rusets-portfolio",
+      },
+
+      # --- Route53 zone read (for aws_route53_zone.this) ---
+      {
+        Effect = "Allow",
+        Action = [
+          "route53:GetHostedZone",
+          "route53:ListHostedZones",
+        ],
+        Resource = "*",
+      },
+
+      # --- IAM OIDC provider read (data.aws_iam_openid_connect_provider.github) ---
+      {
+        Effect = "Allow",
+        Action = [
+          "iam:ListOpenIDConnectProviders",
+          "iam:GetOpenIDConnectProvider",
+        ],
+        Resource = "*",
+      },
+
+      # --- ACM certificate read (for aws_acm_certificate.site) ---
+      {
+        Effect = "Allow",
+        Action = [
+          "acm:DescribeCertificate",
+          "acm:ListCertificates",
+          "acm:GetCertificate",
+        ],
+        Resource = "*",
       }
     ]
   })
