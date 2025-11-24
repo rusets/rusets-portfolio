@@ -1,0 +1,232 @@
+# 🚀 Ruslan AWS — Portfolio Infrastructure  
+### **Static Website on AWS (S3 + CloudFront + Route53 + Terraform + GitHub Actions OIDC)**  
+
+<p align="left">
+  <img src="https://img.shields.io/badge/IaC-Terraform-5C4EE5?style=for-the-badge&logo=terraform&logoColor=white"/>
+  <img src="https://img.shields.io/badge/AWS-CloudFront-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Storage-S3-DD344C?style=for-the-badge&logo=amazons3&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub-Actions-000000?style=for-the-badge&logo=githubactions&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Domain-rusets.com-blue?style=for-the-badge"/>
+</p>
+
+A fully automated, production-ready infrastructure for my personal DevOps portfolio website.  
+Features secure static hosting on **S3**, global delivery via **CloudFront**, **HTTPS with ACM**, and **zero-secret CI/CD** using **GitHub Actions OIDC**.
+
+---
+
+# 🧭 Overview
+
+This project demonstrates how to deploy a secure, scalable, real-world static website infrastructure on AWS using Terraform + GitHub Actions OIDC.
+
+Infrastructure includes:
+
+- Private S3 bucket for site files  
+- CloudFront CDN with modern TLS  
+- Route53 zone & records  
+- ACM certificate (DNS validated)  
+- OIDC role for GitHub Actions (no long-lived AWS keys)  
+- Push-to-deploy pipeline  
+- Auto-invalidation of CloudFront cache  
+
+Everything is 100% Infrastructure-as-Code.
+
+---
+
+# 🗺️ Architecture Diagram (Mermaid)
+
+```mermaid
+flowchart TD
+
+    A[GitHub Repo<br/>rusets-portfolio] --> B[GitHub Actions OIDC Login]
+
+    B --> C[Assume IAM Role<br/>rusets-portfolio-gha-role]
+
+    C --> D[Terraform Backend<br/>S3 + DynamoDB]
+
+    C --> E[Deploy Static Site to S3]
+
+    E --> F[CloudFront CDN]
+
+    F --> G[User Browser]
+
+    H[Route53 Hosted Zone] --> F
+    I[ACM Certificate<br/>us-east-1] --> F
+```
+
+---
+
+# 🧱 Tech Stack Summary
+
+| Layer | Technology |
+|------|------------|
+| Cloud | AWS (S3, CloudFront, Route53, ACM) |
+| IaC | Terraform (multi-file, production formatting) |
+| CI/CD | GitHub Actions + OIDC (no secrets) |
+| Frontend | HTML, CSS, JS (custom neon RGB design) |
+| Security | OAC → S3 Private Bucket, HTTPS, DNS validation |
+| Domains | rusets.com |
+
+---
+
+# 📁 Repository Structure
+
+```bash
+rusets-portfolio/
+│
+├── infra/                 # All Terraform infrastructure
+│   ├── backend.tf
+│   ├── providers.tf
+│   ├── variables.tf
+│   ├── locals.tf
+│   ├── dns.tf
+│   ├── github_oidc.tf
+│   ├── site_s3_cloudfront.tf
+│   ├── outputs.tf
+│
+├── site/                  # Static website files
+│   ├── index.html
+│   ├── styles.css
+│   ├── script.js
+│   └── assets/
+│       ├── icons/
+│       ├── badges/
+│       ├── cv/
+│       └── stars-bg.png
+│
+└── .github/workflows/
+    ├── portfolio.yml      # Deploy static site on push
+    ├── infra-plan.yml     # Terraform plan (manual)
+    └── infra-apply.yml    # Terraform apply (manual)
+```
+
+---
+
+# 🛠 Requirements
+
+Before deploying:
+
+- AWS account  
+- Route53 hosted zone (created by Terraform)  
+- Terraform ≥ 1.6  
+- GitHub repo  
+- Domain (e.g., **rusets.com**) purchased  
+- GitHub Actions OIDC enabled (Terraform handles this)
+
+---
+
+# 🚀 Deployment Flow
+
+## **1. Bootstrap Terraform backend**
+
+```bash
+cd infra
+terraform init
+terraform apply -target=aws_s3_bucket.state -target=aws_dynamodb_table.locks
+```
+
+## **2. Deploy full infrastructure**
+
+```bash
+terraform apply
+```
+
+## **3. Upload static site (automatic)**  
+Push to main branch:
+
+```bash
+git add .
+git commit -m "update site"
+git push
+```
+
+GitHub Actions will:
+
+1. Assume OIDC role  
+2. Sync `site/` → S3  
+3. Invalidate CloudFront  
+4. Website updates instantly  
+
+---
+
+# 🔐 IAM & Security Model
+
+- No static AWS keys  
+- GitHub → OIDC → IAM role  
+- S3 bucket **private**  
+- CloudFront uses **OAC**  
+- ACM TLS is **DNS validated**  
+- Route53 records managed via Terraform  
+- CI/CD is least-privilege (after cleanup phase)
+
+---
+
+# ❗ Troubleshooting
+
+### **403 AccessDenied from S3**
+Cause: CloudFront OAC not attached.  
+Fix: Re-apply infra after certificate validation.
+
+---
+
+### **ACM certificate stuck “Pending validation”**
+Fix:  
+- Confirm DNS CNAME created  
+- Ensure Namecheap → AWS Route53 NS delegation is correct  
+- Wait 10–20 minutes
+
+---
+
+### **GitHub Actions cannot assume IAM role**
+Fix:
+- Check repo name matches OIDC condition  
+- Ensure `sub: repo:rusets/rusets-portfolio:*`  
+- Re-run workflow  
+
+---
+
+### **CloudFront cache not updating**
+Fix:
+
+```bash
+aws cloudfront create-invalidation \
+  --distribution-id XXXXXXXXX \
+  --paths "/*"
+```
+
+---
+
+# 📘 Lessons Learned
+
+- Route53 NS delegation must happen **before** ACM validation  
+- CloudFront OAC is superior to legacy OAI  
+- Terraform S3 backend must exist *before* full `apply`  
+- GitHub Actions OIDC eliminates ALL access keys  
+- Using `aws_s3_bucket_policy` correctly prevents public exposure  
+- CloudFront requires certificate in **us-east-1 only**  
+- S3 sync + CloudFront invalidation = super fast deployment  
+
+---
+
+# 🔮 Future Work
+
+- Replace temporary admin access with least-privilege  
+- Add GitHub Actions test stage (HTML validator, minifier)  
+- Add automatic Lighthouse performance report  
+- Add WAF + rate limiting  
+- Add per-branch preview deployments  
+- Add CloudFront logging to S3  
+- Add monitoring dashboard (CloudWatch / Grafana)  
+
+---
+
+# 🖼️ Screenshots
+
+
+
+---
+
+# 📄 License
+
+- Released under the **MIT License** — free to use, modify, and learn from.  
+- © **Ruslan Dashkin (“🚀 Ruslan AWS”)**.  
+- The branding “🚀 Ruslan AWS” and related visuals are protected against commercial reuse.
