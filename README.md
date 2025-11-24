@@ -1,4 +1,4 @@
-# 🚀 Ruslan AWS — Portfolio Infrastructure  
+#  Ruslan AWS — Portfolio Infrastructure  
 ### **Static Website on AWS (S3 + CloudFront + Route53 + Terraform + GitHub Actions OIDC)**  
 
 <p align="left">
@@ -14,7 +14,7 @@ Features secure static hosting on **S3**, global delivery via **CloudFront**, **
 
 ---
 
-# 🧭 Overview
+#  Overview
 
 This project demonstrates how to deploy a secure, scalable, real-world static website infrastructure on AWS using Terraform + GitHub Actions OIDC.
 
@@ -32,7 +32,7 @@ Everything is 100% Infrastructure-as-Code.
 
 ---
 
-# 🗺️ Architecture Diagram (Mermaid)
+#  Architecture Diagram (Mermaid)
 
 ```mermaid
 flowchart TD
@@ -47,7 +47,7 @@ flowchart TD
 
     E --> F[CloudFront CDN]
 
-    F --> G[User Browser]
+    F <--> G[User Browser]
 
     H[Route53 Hosted Zone] --> F
     I[ACM Certificate<br/>us-east-1] --> F
@@ -55,7 +55,7 @@ flowchart TD
 
 ---
 
-# 🧱 Tech Stack Summary
+#  Tech Stack Summary
 
 | Layer | Technology |
 |------|------------|
@@ -68,60 +68,66 @@ flowchart TD
 
 ---
 
-# 📁 Repository Structure
+#  Repository Structure
 
-```bash
+```text
 rusets-portfolio/
-│
-├── infra/                 # All Terraform infrastructure
+├── .github/
+│   └── workflows/
+│       ├── portfolio.yml
+│       ├── infra-plan.yml
+│       └── infra-apply.yml
+├── .gitignore
+├── docs/
+│   └── screenshots/
+├── infra/
 │   ├── backend.tf
-│   ├── providers.tf
-│   ├── variables.tf
-│   ├── locals.tf
 │   ├── dns.tf
 │   ├── github_oidc.tf
-│   ├── site_s3_cloudfront.tf
+│   ├── locals.tf
 │   ├── outputs.tf
-│
-├── site/                  # Static website files
+│   ├── providers.tf
+│   ├── site_s3_cloudfront.tf
+│   └── variables.tf
+├── infra-bootstrap/
+│   ├── locals.tf
+│   ├── outputs.tf
+│   ├── providers.tf
+│   ├── state_storage.tf
+│   ├── terraform.tfstate
+│   └── variables.tf
+├── site/
 │   ├── index.html
+│   ├── error.html
 │   ├── styles.css
 │   ├── script.js
 │   └── assets/
-│       ├── icons/
-│       ├── badges/
-│       ├── cv/
-│       └── stars-bg.png
-│
-└── .github/workflows/
-    ├── portfolio.yml      # Deploy static site on push
-    ├── infra-plan.yml     # Terraform plan (manual)
-    └── infra-apply.yml    # Terraform apply (manual)
+└── README.md
 ```
 
 ---
 
-# 🛠 Requirements
+#  Requirements
 
 Before deploying:
 
 - AWS account  
-- Route53 hosted zone (created by Terraform)  
+- Route53 hosted zone (created by Terraform — requires Namecheap NS delegation)
 - Terraform ≥ 1.6  
 - GitHub repo  
-- Domain (e.g., **rusets.com**) purchased  
+- Domain purchased (e.g., **rusets.com**)    
 - GitHub Actions OIDC enabled (Terraform handles this)
 
 ---
 
-# 🚀 Deployment Flow
+#  Deployment Flow
 
 ## **1. Bootstrap Terraform backend**
 
 ```bash
-cd infra
+cd infra-bootstrap
 terraform init
-terraform apply -target=aws_s3_bucket.state -target=aws_dynamodb_table.locks
+terraform apply
 ```
 
 ## **2. Deploy full infrastructure**
@@ -148,7 +154,7 @@ GitHub Actions will:
 
 ---
 
-# 🔐 IAM & Security Model
+#  IAM & Security Model
 
 - No static AWS keys  
 - GitHub → OIDC → IAM role  
@@ -160,7 +166,7 @@ GitHub Actions will:
 
 ---
 
-# ❗ Troubleshooting
+#  Troubleshooting
 
 ### **403 AccessDenied from S3**
 Cause: CloudFront OAC not attached.  
@@ -195,7 +201,7 @@ aws cloudfront create-invalidation \
 
 ---
 
-# 📘 Lessons Learned
+#  Lessons Learned
 
 - Route53 NS delegation must happen **before** ACM validation  
 - CloudFront OAC is superior to legacy OAI  
@@ -207,9 +213,8 @@ aws cloudfront create-invalidation \
 
 ---
 
-# 🔮 Future Work
-
-- Replace temporary admin access with least-privilege  
+#  Future Work
+ 
 - Add GitHub Actions test stage (HTML validator, minifier)  
 - Add automatic Lighthouse performance report  
 - Add WAF + rate limiting  
@@ -219,13 +224,37 @@ aws cloudfront create-invalidation \
 
 ---
 
-# 🖼️ Screenshots
+# Screenshots
 
+## Home / Hero Section
+![Home Hero](./docs/screenshots/01-home-hero.png)
 
+**Shows:** the main landing section with neon RGB visuals, animated starfield, “Ruslan AWS” branding, and call-to-action buttons.
 
 ---
 
-# 📄 License
+## Projects Grid
+![Projects Grid](./docs/screenshots/02-projects-grid.png)
+
+**Shows:** the full 8-project grid with clean card layout, hover effects, and structured presentation of AWS/DevOps projects.
+
+---
+
+## GitHub Actions Workflows
+![GitHub Actions Workflows](./docs/screenshots/03-github-actions-workflows.png)
+
+**Shows:** automated CI/CD pipelines using GitHub OIDC — including site deployment workflow and Terraform plan/apply automation.
+
+---
+
+## CloudFront Distribution
+![CloudFront Distribution](./docs/screenshots/04-cloudfront-distribution.png)
+
+**Shows:** CloudFront configuration with S3 origin, OAC, custom domain `rusets.com`, HTTPS certificate validation, and CDN settings.
+
+---
+
+#  License
 
 - Released under the **MIT License** — free to use, modify, and learn from.  
 - © **Ruslan Dashkin (“🚀 Ruslan AWS”)**.  
