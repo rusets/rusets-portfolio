@@ -1,5 +1,6 @@
 ############################################
 # GitHub OIDC provider (existing shared)
+# Purpose: Reuse global GitHub OIDC provider
 ############################################
 
 data "aws_iam_openid_connect_provider" "github" {
@@ -7,12 +8,13 @@ data "aws_iam_openid_connect_provider" "github" {
 }
 
 ############################################
-# IAM policy for GitHub Actions (S3 + CloudFront)
+# IAM policy for GitHub Actions
+# Purpose: Deploy static site + manage TF backend state/locks
 ############################################
 
 resource "aws_iam_policy" "github_actions" {
   name        = "rusets-portfolio-gha-policy"
-  description = "Permissions for GitHub Actions to deploy static site to S3 and invalidate CloudFront cache"
+  description = "Permissions for GitHub Actions to deploy static site and manage Terraform backend state"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -42,6 +44,35 @@ resource "aws_iam_policy" "github_actions" {
           "cloudfront:CreateInvalidation"
         ],
         Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        Resource = [
+          "arn:aws:s3:::tf-state-rusets-portfolio/rusets-portfolio/terraform.tfstate"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:ListBucket"
+        ],
+        Resource = "arn:aws:s3:::tf-state-rusets-portfolio"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DescribeTable"
+        ],
+        Resource = "arn:aws:dynamodb:us-east-1:097635932419:table/tf-locks-rusets-portfolio"
       }
     ]
   })
@@ -54,6 +85,7 @@ resource "aws_iam_policy" "github_actions" {
 
 ############################################
 # IAM role for GitHub Actions (rusets-portfolio)
+# Purpose: Allow GitHub OIDC to assume limited deploy role
 ############################################
 
 resource "aws_iam_role" "github_actions" {
@@ -88,6 +120,7 @@ resource "aws_iam_role" "github_actions" {
 
 ############################################
 # Attach policy to GitHub Actions role
+# Purpose: Bind least-privilege policy to deploy role
 ############################################
 
 resource "aws_iam_role_policy_attachment" "github_actions" {
