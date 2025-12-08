@@ -21,19 +21,4 @@ variable "domain_name" {
   default     = "rusets.com"
 }
 
-############################################
-# GitHub OIDC Configuration
-# Purpose: Restrict IAM role to specific repo
-############################################
 
-variable "github_owner" {
-  type        = string
-  description = "GitHub owner (user or org) for OIDC trust"
-  default     = "rusets"
-}
-
-variable "github_repo" {
-  type        = string
-  description = "GitHub repository name for OIDC trust"
-  default     = "rusets-portfolio"
-}

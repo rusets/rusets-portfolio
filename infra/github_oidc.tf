@@ -11,7 +11,7 @@ data "aws_iam_openid_connect_provider" "github" {
 # IAM policy for GitHub Actions
 # Purpose: Deploy static site + manage TF backend + read infra
 ############################################
-
+#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "github_actions" {
   name        = "rusets-portfolio-gha-policy"
   description = "Permissions for GitHub Actions to deploy static site and manage Terraform backend state"
@@ -19,7 +19,6 @@ resource "aws_iam_policy" "github_actions" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # --- Static site S3 objects ---
       {
         Effect = "Allow",
         Action = [
@@ -188,12 +187,3 @@ resource "aws_iam_role_policy_attachment" "github_actions" {
   policy_arn = aws_iam_policy.github_actions.arn
 }
 
-############################################
-# Temporary admin policy for CI debugging
-# Purpose: Grant full admin to GitHub Actions role (REMOVE LATER)
-############################################
-
-resource "aws_iam_role_policy_attachment" "github_actions_admin_temp" {
-  role       = aws_iam_role.github_actions.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}

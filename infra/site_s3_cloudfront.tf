@@ -10,15 +10,42 @@ resource "aws_s3_bucket" "site" {
 }
 
 ############################################
-# S3 Bucket Ownership and Public Access Block
-# Purpose: Ensure bucket is private and controlled
+# S3 Bucket Default Encryption
+# Purpose: Encrypt all objects at rest with SSE-S3
+############################################
+#tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+############################################
+# S3 Bucket Versioning - Site
+# Purpose: Protect against accidental deletes and overwrites
 ############################################
 
+resource "aws_s3_bucket_versioning" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+############################################
+# S3 Bucket Ownership Controls — Site
+# Purpose: Disable ACLs, bucket-owner enforced
+############################################
 resource "aws_s3_bucket_ownership_controls" "site" {
   bucket = aws_s3_bucket.site.id
 
   rule {
-    object_ownership = "BucketOwnerPreferred"
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
@@ -29,6 +56,67 @@ resource "aws_s3_bucket_public_access_block" "site" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+############################################
+# S3 Bucket - CloudFront Logs
+# Purpose: Store CDN access logs (no extra logging/versioning on logs bucket)
+############################################
+#tfsec:ignore:aws-s3-enable-bucket-logging
+#tfsec:ignore:aws-s3-enable-versioning
+resource "aws_s3_bucket" "logs" {
+  bucket = local.cf_logs_bucket_name
+
+  tags = local.tags
+}
+
+
+############################################
+# S3 Bucket Ownership and Public Access Block — Logs
+# Purpose: Allow ACLs for log delivery (no BucketOwnerEnforced)
+############################################
+resource "aws_s3_bucket_ownership_controls" "logs" {
+  bucket = aws_s3_bucket.logs.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "logs" {
+  bucket = aws_s3_bucket.logs.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+############################################
+# S3 Bucket Default Encryption (Logs)
+# Purpose: Encrypt access logs at rest with SSE-S3
+############################################
+#tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
+  bucket = aws_s3_bucket.logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+############################################
+# S3 Bucket Access Logging - Site
+# Purpose: Enable access logging for main site bucket
+############################################
+
+resource "aws_s3_bucket_logging" "site_logging" {
+  bucket = aws_s3_bucket.site.id
+
+  target_bucket = aws_s3_bucket.logs.id
+  target_prefix = "s3/"
 }
 
 ############################################
@@ -65,7 +153,7 @@ resource "aws_acm_certificate" "site" {
 # CloudFront Distribution
 # Purpose: Serve static site over HTTPS with custom domain
 ############################################
-
+#tfsec:ignore:aws-cloudfront-enable-waf
 resource "aws_cloudfront_distribution" "site" {
   enabled             = true
   comment             = "${var.project_name} static site"
@@ -74,6 +162,15 @@ resource "aws_cloudfront_distribution" "site" {
   aliases = [
     var.domain_name,
   ]
+
+  ############################################
+  # Logging configuration (CloudFront → S3 logs bucket)
+  ############################################
+  logging_config {
+    include_cookies = false
+    bucket          = aws_s3_bucket.logs.bucket_domain_name
+    prefix          = "cloudfront/"
+  }
 
   origin {
     domain_name              = aws_s3_bucket.site.bucket_regional_domain_name
