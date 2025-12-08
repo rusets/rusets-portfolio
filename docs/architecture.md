@@ -62,7 +62,7 @@ rusets-portfolio/
 ### **Static Hosting**
 - Private S3 bucket used as the origin (no public access)
 - CloudFront CDN with Origin Access Control (OAC)
-- Custom domain **rusets.com**
+- Custom domain **[rusets.com](https://rusets.com)**  
 - TLS termination via AWS ACM (DNS validation, us-east-1)
 
 ---

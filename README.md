@@ -18,7 +18,7 @@ The stack uses **Terraform**, **CloudFront**, **private S3**, **ACM TLS**, and *
 
 # Overview
 
-This project delivers a fully automated, production-style static website stack for **rusets.com**, built with Terraform and deployed through GitHub Actions OIDC.  
+This project delivers a fully automated, production-style static website stack for **[rusets.com](https://rusets.com)**, built with Terraform and deployed through GitHub Actions OIDC.  
 The infrastructure is optimized for security, simplicity, and global performance while preserving a clean, maintainable IaC layout.
 
 Core principles:
@@ -29,7 +29,6 @@ Core principles:
 - **Zero maintenance** and minimal AWS cost
 
 The result is a modern, secure, globally distributed portfolio website powered entirely by Infrastructure-as-Code.
-
 ---
 
 #  Architecture Diagram (Mermaid)
