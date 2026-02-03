@@ -21,7 +21,7 @@ The goal was simple: no long-lived credentials, minimal maintenance, and infrast
 
 # Overview
 
-I built this project as a fully automated static website stack for **[rusets.com](https://rusets.com)**, using Terraform and GitHub Actions OIDC for deployment.
+I use this setup to host **[rusets.com](https://rusets.com)** as a fully automated static website stack, using Terraform and GitHub Actions OIDC for deployment.
 The main goal was to keep the infrastructure secure and straightforward without adding unnecessary complexity.
 
 Core principles:
