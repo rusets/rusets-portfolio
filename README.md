@@ -14,12 +14,15 @@
 A secure, automated AWS infrastructure powering my personal **Ruslan AWS** portfolio website.  
 The stack uses **Terraform**, **CloudFront**, **private S3**, **ACM TLS**, and **GitHub Actions OIDC** for fully keyless CI/CD and global static hosting.
 
+I built this project as a personal portfolio, but with the same security and automation patterns I use in real AWS environments.
+The goal was simple: no long-lived credentials, minimal maintenance, and infrastructure that is easy to reason about by reading the code
+
 ---
 
 # Overview
 
-This project delivers a fully automated, production-style static website stack for **[rusets.com](https://rusets.com)**, built with Terraform and deployed through GitHub Actions OIDC.  
-The infrastructure is optimized for security, simplicity, and global performance while preserving a clean, maintainable IaC layout.
+I built this project as a fully automated static website stack for **[rusets.com](https://rusets.com)**, using Terraform and GitHub Actions OIDC for deployment.
+The main goal was to keep the infrastructure secure and straightforward without adding unnecessary complexity.
 
 Core principles:
 - **Private-by-default** design (S3 locked, CloudFront OAC)
