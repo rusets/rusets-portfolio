@@ -1,5 +1,5 @@
-# **Ruslan AWS — Portfolio Infrastructure**
-### **Static Website on AWS (S3 + CloudFront + Route53 + Terraform + GitHub Actions OIDC)**
+# Portfolio Website Infrastructure
+### Secure static hosting on AWS with Terraform and GitHub Actions OIDC
 
 <p align="center">
   <img src="https://img.shields.io/badge/Terraform-7B42BC?logo=terraform&logoColor=white" />
@@ -11,11 +11,11 @@
   <img src="https://img.shields.io/badge/Security-checkov%20%7C%20tfsec%20%7C%20tflint-brightgreen" />
 </p>
 
-A secure, automated AWS infrastructure powering my personal **Ruslan AWS** portfolio website.  
-The stack uses **Terraform**, **CloudFront**, **private S3**, **ACM TLS**, and **GitHub Actions OIDC** for fully keyless CI/CD and global static hosting.
+I designed and built this project as the infrastructure behind my personal portfolio website, applying the same security and automation standards I use in real AWS environments.
 
-I built this project as a personal portfolio, but with the same security and automation patterns I use in real AWS environments.
-The goal was simple: no long-lived credentials, minimal maintenance, and infrastructure that is easy to reason about by reading the code
+The stack is fully automated and secure by design: Terraform for Infrastructure as Code, private S3 with CloudFront (OAC), ACM-managed TLS, and GitHub Actions with OIDC for completely keyless CI/CD.
+
+My goal was straightforward — eliminate long-lived credentials, minimize operational overhead, and create infrastructure that is easy to understand, audit, and extend simply by reading the code.
 
 ---
 
@@ -303,9 +303,8 @@ If requirements grow later, each option can be enabled with a single Terraform c
 **Shows:** CloudFront configuration with S3 origin, OAC, custom domain `rusets.com`, HTTPS certificate validation, and CDN settings.
 
 ---
+## License
 
-#  License
+This project is released under the MIT License.
 
-- Released under the **MIT License** — free to use, modify, and learn from.  
-- © **Ruslan Dashkin (“🚀 Ruslan AWS”)**.  
-- The branding “🚀 Ruslan AWS” and related visuals are protected against commercial reuse.
+See the `LICENSE` file for details.

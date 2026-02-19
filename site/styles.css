@@ -504,3 +504,22 @@ body {
   font-size: 15px;
   opacity: 0.9;
 }
+
+@media (min-width: 760px) {
+  .projects-grid .proj-card.full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+@media (min-width: 760px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
